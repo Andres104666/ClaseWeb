@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar {{ entidad }} - CIATEQ</title>
+    <style>
+        /* Reset y estilos base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #F8F9FA;
+            color: #495057;
+            line-height: 1.6;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Contenedor principal */
+        .edit-container {
+            background: #FFFFFF;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+            max-width: 700px;
+            width: 100%;
+        }
+
+        /* Título */
+        h1 {
+            color: #2C3E50;
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            font-weight: 600;
+            border-bottom: 2px solid #E9ECEF;
+            padding-bottom: 10px;
+        }
+
+        /* Formulario */
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Campos del formulario */
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-weight: 500;
+            color: #2C3E50;
+            font-size: 0.95rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 10px 15px;
+            border: 1px solid #DEE2E6;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #2C3E50;
+        }
+
+        /* Botones */
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            justify-content: flex-end;
+        }
+
+        button[type="submit"],
+        a.btn-cancel {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        button[type="submit"] {
+            background-color: #2C3E50;
+            color: white;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #34495E;
+            transform: translateY(-2px);
+        }
+
+        a.btn-cancel {
+            background-color: #E9ECEF;
+            color: #495057;
+            border: 1px solid #DEE2E6;
+        }
+
+        a.btn-cancel:hover {
+            background-color: #DEE2E6;
+            transform: translateY(-2px);
+        }
+
+        /* Estilos para los párrafos del formulario */
+        form p {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        form p label {
+            font-weight: 500;
+            color: #2C3E50;
+        }
+
+        form p input,
+        form p select,
+        form p textarea {
+            padding: 8px 12px;
+            border: 1px solid #DEE2E6;
+            border-radius: 4px;
+        }
+
+        /* Mensajes de error */
+        .errorlist {
+            color: #E74C3C;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            list-style: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="edit-container">
+        <h1>Editar {{ entidad }}</h1>
+        
+        <form method="post">
+            {% csrf_token %}
+            
+            {{ form.as_p }}
+            
+            <div class="form-actions">
+                <button type="submit">Guardar</button>
+                <a href="{% url 'gestion_general' %}" class="btn-cancel">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

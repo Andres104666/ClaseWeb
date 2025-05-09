@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unidades - CIATEQ</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* ESTILOS ORIGINALES DE TU BARRA LATERAL */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        .container {
+            display: flex;
+            min-height: 100vh;
+            background: #f8fafc;
+        }
+        .sidebar {
+            width: 280px;
+            background: #1e6feb;
+            color: white;
+            padding: 30px 0;
+            flex-shrink: 0;
+        }
+        .sidebar nav ul {
+            list-style: none;
+        }
+        .sidebar nav ul li {
+            padding: 12px 25px;
+            transition: all 0.3s;
+        }
+        .sidebar nav ul li:hover {
+            background: #1a63d1;
+        }
+        .menu_nav a {
+            color: #e2e8f0;
+            text-decoration: none;
+            display: block;
+            font-size: 0.95rem;
+            transition: color 0.3s;
+        }
+        .menu_nav a:hover {
+            color: #ffffff;
+        }
+
+        /* ESTILOS PARA LAS TARJETAS DE UNIDADES */
+        .unidad-card {
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        .unidad-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .unidad-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #1e6feb 0%, #1a56c7 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .badge-estado {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-weight: 500;
+        }
+        .estado-activa { background-color: #dcfce7; color: #166534; }
+        .estado-inactiva { background-color: #fee2e2; color: #991b1b; }
+        .estado-construccion { background-color: #fef9c3; color: #854d0e; }
+        
+        .contacto-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <!-- CONTENEDOR PRINCIPAL CON TU ESTRUCTURA ORIGINAL -->
+    <div class="container">
+        <!-- BARRA LATERAL ORIGINAL -->
+        <aside class="sidebar">
+            <nav>
+                <ul class="menu_nav">
+                    <li><a href="{% url 'home' %}">Inicio</a></li>
+                    <li><a href="{% url 'investigadores' %}">Investigadores</a></li>
+                    <li><a href="{% url 'proyectos' %}">Proyectos</a></li>
+                    <li><a href="{% url 'areas' %}">Áreas</a></li>
+                    <li><a href="{% url 'especialidades' %}">Especialidades</a></li>
+                    <li><a href="{% url 'lineas_investigacion' %}">Líneas Investigación</a></li>
+                    <li><a href="{% url 'eventos' %}">Eventos</a></li>
+                    <li><a href="{% url 'articulos' %}">Artículos</a></li>
+                    <li><a href="{% url 'unidades' %}">Unidades</a></li>
+                    <li><a href="{% url 'estudiantes' %}">Estudiantes</a></li>
+                </ul>
+            </nav>
+        </aside>
+        
+        <!-- CONTENIDO PRINCIPAL -->
+        <main class="main-content" style="flex-grow: 1; padding: 40px; background: #f8fafc;">
+            <h1 class="text-2xl font-bold text-gray-800 mb-6 pb-4 border-b border-gray-200">Unidades CIATEQ</h1>
+            
+            <!-- BARRA DE BÚSQUEDA Y FILTROS -->
+            <div class="mb-8 bg-white p-6 rounded-lg shadow-sm">
+                <form method="GET" action="{% url 'unidades' %}" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <!-- Búsqueda por nombre -->
+                        <div>
+                            <label for="q" class="block text-sm font-medium text-gray-700 mb-1">Buscar unidad</label>
+                            <input 
+                                type="text" 
+                                name="q" 
+                                id="q"
+                                placeholder="Nombre de la unidad..." 
+                                value="{{ request.GET.q }}"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            >
+                        </div>
+                        
+                        <!-- Filtro por estado -->
+                        <div>
+                            <label for="estado" class="block text-sm font-medium text-gray-700 mb-1">Estado</label>
+                            <select 
+                                name="estado" 
+                                id="estado"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            >
+                                <option value="">Todos los estados</option>
+                                <option value="ACT" {% if request.GET.estado == "ACT" %}selected{% endif %}>Activa</option>
+                                <option value="INA" {% if request.GET.estado == "INA" %}selected{% endif %}>Inactiva</option>
+                                <option value="CON" {% if request.GET.estado == "CON" %}selected{% endif %}>En construcción</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Filtro por ubicación -->
+                        <div>
+                            <label for="ubicacion" class="block text-sm font-medium text-gray-700 mb-1">Ubicación</label>
+                            <select 
+                                name="ubicacion" 
+                                id="ubicacion"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            >
+                                <option value="">Todas las ubicaciones</option>
+                                {% for ubicacion in ubicaciones %}
+                                <option value="{{ ubicacion.id }}" {% if ubicacion.id|stringformat:"s" == request.GET.ubicacion %}selected{% endif %}>
+                                    {{ ubicacion.ciudad }}, {{ ubicacion.estado }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-end">
+                        <button 
+                            type="submit" 
+                            class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center"
+                        >
+                            <i class="fas fa-search mr-2"></i> Buscar
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- LISTA DE UNIDADES -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {% for unidad in unidades %}
+                <!-- Tarjeta de unidad -->
+                <div class="unidad-card bg-white p-6 rounded-lg">
+                    <div class="flex flex-col items-center text-center mb-4">
+                        <div class="unidad-icon">
+                            <i class="fas fa-{{ unidad.icono|default:'building' }}"></i>
+                        </div>
+                        <h2 class="text-xl font-semibold text-gray-800">{{ unidad.nombre }}</h2>
+                        <span class="badge-estado estado-{{ unidad.estado|lower }}">
+                            {{ unidad.get_estado_display }}
+                        </span>
+                    </div>
+                    
+                    <!-- Información básica -->
+                    <div class="space-y-3 mb-4">
+                        <div>
+                            <h3 class="text-sm font-medium text-gray-700 mb-1">Ubicación:</h3>
+                            <p class="text-gray-600 text-sm">
+                                <i class="fas fa-map-marker-alt mr-1 text-blue-500"></i>
+                                {{ unidad.ubicacion.completa }}
+                            </p>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-sm font-medium text-gray-700 mb-1">Director:</h3>
+                            <p class="text-gray-600 text-sm">
+                                <i class="fas fa-user-tie mr-1 text-blue-500"></i>
+                                {{ unidad.director.nombre }}
+                            </p>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-sm font-medium text-gray-700 mb-1">Áreas de especialización:</h3>
+                            <div class="flex flex-wrap gap-2 justify-center">
+                                {% for area in unidad.areas_especializacion.all %}
+                                <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                                    {{ area.nombre }}
+                                </span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Información de contacto -->
+                    <div class="mb-4">
+                        <h3 class="text-sm font-medium text-gray-700 mb-2">Contacto:</h3>
+                        <div class="space-y-2">
+                            <div class="contacto-item">
+                                <i class="fas fa-phone text-blue-500 text-sm"></i>
+                                <span class="text-gray-600 text-sm">{{ unidad.telefono }}</span>
+                            </div>
+                            <div class="contacto-item">
+                                <i class="fas fa-envelope text-blue-500 text-sm"></i>
+                                <span class="text-gray-600 text-sm">{{ unidad.email }}</span>
+                            </div>
+                            <div class="contacto-item">
+                                <i class="fas fa-globe text-blue-500 text-sm"></i>
+                                <a href="{{ unidad.sitio_web }}" target="_blank" class="text-blue-600 hover:underline text-sm">
+                                    {{ unidad.sitio_web|truncatechars:25 }}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Acciones -->
+                    <div class="flex justify-between items-center mt-4 pt-4 border-t border-gray-100">
+                        <a 
+                            href="#" 
+                            class="text-sm text-blue-600 hover:text-blue-800 hover:underline flex items-center"
+                        >
+                            <i class="fas fa-users mr-1"></i> Personal
+                        </a>
+                        
+                        <div class="flex space-x-2">
+                            <a 
+                                href="#" 
+                                class="text-sm text-gray-600 hover:text-gray-800 hover:underline flex items-center"
+                            >
+                                <i class="fas fa-project-diagram mr-1"></i> Proyectos
+                            </a>
+                            <span class="text-gray-400">|</span>
+                            <a 
+                                href="#" 
+                                class="text-sm text-gray-600 hover:text-gray-800 hover:underline flex items-center"
+                            >
+                                <i class="fas fa-map mr-1"></i> Ubicación
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="bg-white p-8 rounded-lg text-center md:col-span-2 lg:col-span-3">
+                    <i class="fas fa-building text-4xl text-gray-300 mb-4"></i>
+                    <h3 class="text-lg font-medium text-gray-700 mb-2">No se encontraron unidades</h3>
+                    <p class="text-gray-500">Intenta ajustar tus criterios de búsqueda</p>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <!-- PAGINACIÓN (si es necesario) -->
+            {% if unidades.has_other_pages %}
+            <div class="mt-8 flex justify-center">
+                <nav class="flex items-center space-x-2">
+                    {% if unidades.has_previous %}
+                    <a 
+                        href="?page={{ unidades.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.estado %}&estado={{ request.GET.estado }}{% endif %}{% if request.GET.ubicacion %}&ubicacion={{ request.GET.ubicacion }}{% endif %}" 
+                        class="px-3 py-1 rounded border border-gray-300 text-gray-700 hover:bg-gray-50"
+                    >
+                        &laquo;
+                    </a>
+                    {% endif %}
+                    
+                    {% for num in unidades.paginator.page_range %}
+                        {% if unidades.number == num %}
+                        <span class="px-3 py-1 rounded bg-blue-600 text-white">{{ num }}</span>
+                        {% else %}
+                        <a 
+                            href="?page={{ num }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.estado %}&estado={{ request.GET.estado }}{% endif %}{% if request.GET.ubicacion %}&ubicacion={{ request.GET.ubicacion }}{% endif %}" 
+                            class="px-3 py-1 rounded border border-gray-300 text-gray-700 hover:bg-gray-50"
+                        >
+                            {{ num }}
+                        </a>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if unidades.has_next %}
+                    <a 
+                        href="?page={{ unidades.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.estado %}&estado={{ request.GET.estado }}{% endif %}{% if request.GET.ubicacion %}&ubicacion={{ request.GET.ubicacion }}{% endif %}" 
+                        class="px-3 py-1 rounded border border-gray-300 text-gray-700 hover:bg-gray-50"
+                    >
+                        &raquo;
+                    </a>
+                    {% endif %}
+                </nav>
+            </div>
+            {% endif %}
+        </main>
+    </div>
+</body>
+</html>

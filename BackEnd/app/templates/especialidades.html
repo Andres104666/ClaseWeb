@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Especialidades - CIATEQ</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* ESTILOS ORIGINALES DE TU BARRA LATERAL */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        .container {
+            display: flex;
+            min-height: 100vh;
+            background: #f8fafc;
+        }
+        .sidebar {
+            width: 280px;
+            background: #1e6feb;
+            color: white;
+            padding: 30px 0;
+            flex-shrink: 0;
+        }
+        .sidebar nav ul {
+            list-style: none;
+        }
+        .sidebar nav ul li {
+            padding: 12px 25px;
+            transition: all 0.3s;
+        }
+        .sidebar nav ul li:hover {
+            background: #1a63d1;
+        }
+        .menu_nav a {
+            color: #e2e8f0;
+            text-decoration: none;
+            display: block;
+            font-size: 0.95rem;
+            transition: color 0.3s;
+        }
+        .menu_nav a:hover {
+            color: #ffffff;
+        }
+
+        /* ESTILOS PARA LAS TARJETAS DE ESPECIALIDADES */
+        .especialidad-card {
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        .especialidad-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .especialidad-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #1e6feb 0%, #1a56c7 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .badge-count {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-weight: 500;
+        }
+        .count-investigadores { background-color: #e0f2fe; color: #0369a1; }
+        .count-proyectos { background-color: #dcfce7; color: #166534; }
+        .count-lineas { background-color: #f3e8ff; color: #7e22ce; }
+        
+        .area-tag {
+            display: inline-block;
+            background-color: #f3f4f6;
+            color: #4b5563;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- CONTENEDOR PRINCIPAL CON TU ESTRUCTURA ORIGINAL -->
+    <div class="container">
+        <!-- BARRA LATERAL ORIGINAL -->
+        <aside class="sidebar">
+            <nav>
+                <ul class="menu_nav">
+                    <li><a href="{% url 'home' %}">Inicio</a></li>
+                    <li><a href="{% url 'investigadores' %}">Investigadores</a></li>
+                    <li><a href="{% url 'proyectos' %}">Proyectos</a></li>
+                    <li><a href="{% url 'areas' %}">Áreas</a></li>
+                    <li><a href="{% url 'especialidades' %}">Especialidades</a></li>
+                    <li><a href="{% url 'lineas_investigacion' %}">Líneas Investigación</a></li>
+                    <li><a href="{% url 'eventos' %}">Eventos</a></li>
+                    <li><a href="{% url 'articulos' %}">Artículos</a></li>
+                    <li><a href="{% url 'unidades' %}">Unidades</a></li>
+                    <li><a href="{% url 'estudiantes' %}">Estudiantes</a></li>
+                </ul>
+            </nav>
+        </aside>
+        
+        <!-- CONTENIDO PRINCIPAL -->
+        <main class="main-content" style="flex-grow: 1; padding: 40px; background: #f8fafc;">
+            <h1 class="text-2xl font-bold text-gray-800 mb-6 pb-4 border-b border-gray-200">Especialidades de Investigación</h1>
+            
+            <!-- BARRA DE BÚSQUEDA Y FILTROS -->
+            <div class="mb-8 bg-white p-6 rounded-lg shadow-sm">
+                <form method="GET" action="{% url 'especialidades' %}" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <!-- Búsqueda por nombre -->
+                        <div>
+                            <label for="q" class="block text-sm font-medium text-gray-700 mb-1">Buscar especialidad</label>
+                            <input 
+                                type="text" 
+                                name="q" 
+                                id="q"
+                                placeholder="Nombre de la especialidad..." 
+                                value="{{ request.GET.q }}"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            >
+                        </div>
+                        
+                        <!-- Filtro por área -->
+                        <div>
+                            <label for="area" class="block text-sm font-medium text-gray-700 mb-1">Área</label>
+                            <select 
+                                name="area" 
+                                id="area"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            >
+                                <option value="">Todas las áreas</option>
+                                {% for area in areas %}
+                                <option value="{{ area.id }}" {% if area.id|stringformat:"s" == request.GET.area %}selected{% endif %}>
+                                    {{ area.nombre }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <!-- Filtro por tipo -->
+                        <div>
+                            <label for="tipo" class="block text-sm font-medium text-gray-700 mb-1">Tipo</label>
+                            <select 
+                                name="tipo" 
+                                id="tipo"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            >
+                                <option value="">Todos los tipos</option>
+                                <option value="TEC" {% if request.GET.tipo == "TEC" %}selected{% endif %}>Tecnológica</option>
+                                <option value="CIE" {% if request.GET.tipo == "CIE" %}selected{% endif %}>Científica</option>
+                                <option value="INT" {% if request.GET.tipo == "INT" %}selected{% endif %}>Interdisciplinaria</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-end">
+                        <button 
+                            type="submit" 
+                            class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center"
+                        >
+                            <i class="fas fa-search mr-2"></i> Buscar
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- LISTA DE ESPECIALIDADES -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {% for especialidad in especialidades %}
+                <!-- Tarjeta de especialidad -->
+                <div class="especialidad-card bg-white p-6 rounded-lg">
+                    <div class="flex flex-col items-center text-center mb-4">
+                        <div class="especialidad-icon">
+                            <i class="fas fa-{{ especialidad.icono|default:'microscope' }}"></i>
+                        </div>
+                        <h2 class="text-xl font-semibold text-gray-800">{{ especialidad.nombre }}</h2>
+                        <p class="text-sm text-gray-500 mt-1">{{ especialidad.get_tipo_display }}</p>
+                    </div>
+                    
+                    <!-- Descripción -->
+                    <p class="text-gray-600 mb-4 text-sm">{{ especialidad.descripcion|truncatechars:150 }}</p>
+                    
+                    <!-- Estadísticas -->
+                    <div class="grid grid-cols-3 gap-2 mb-4">
+                        <div class="text-center">
+                            <span class="badge-count count-investigadores">{{ especialidad.investigadores_count }} investigadores</span>
+                        </div>
+                        <div class="text-center">
+                            <span class="badge-count count-proyectos">{{ especialidad.proyectos_count }} proyectos</span>
+                        </div>
+                        <div class="text-center">
+                            <span class="badge-count count-lineas">{{ especialidad.lineas_count }} líneas</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Áreas relacionadas -->
+                    <div class="mb-4">
+                        <h3 class="text-sm font-medium text-gray-700 mb-2">Áreas asociadas:</h3>
+                        <div class="flex flex-wrap">
+                            {% for area in especialidad.areas.all|slice:":3" %}
+                            <span class="area-tag">{{ area.nombre }}</span>
+                            {% endfor %}
+                            {% if especialidad.areas.count > 3 %}
+                            <span class="area-tag">+{{ especialidad.areas.count|add:"-3" }} más</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- Acciones -->
+                    <a 
+                        href="{% url 'especialidad_det' especialidad.id %}" 
+                        class="block mt-4 text-center px-4 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition"
+                    >
+                        Ver detalles
+                    </a>
+                </div>
+                {% empty %}
+                <div class="bg-white p-8 rounded-lg text-center md:col-span-2 lg:col-span-3">
+                    <i class="fas fa-microscope text-4xl text-gray-300 mb-4"></i>
+                    <h3 class="text-lg font-medium text-gray-700 mb-2">No se encontraron especialidades</h3>
+                    <p class="text-gray-500">Intenta ajustar tus criterios de búsqueda</p>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <!-- PAGINACIÓN (si es necesario) -->
+            {% if especialidades.has_other_pages %}
+            <div class="mt-8 flex justify-center">
+                <nav class="flex items-center space-x-2">
+                    {% if especialidades.has_previous %}
+                    <a 
+                        href="?page={{ especialidades.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.area %}&area={{ request.GET.area }}{% endif %}{% if request.GET.tipo %}&tipo={{ request.GET.tipo }}{% endif %}" 
+                        class="px-3 py-1 rounded border border-gray-300 text-gray-700 hover:bg-gray-50"
+                    >
+                        &laquo;
+                    </a>
+                    {% endif %}
+                    
+                    {% for num in especialidades.paginator.page_range %}
+                        {% if especialidades.number == num %}
+                        <span class="px-3 py-1 rounded bg-blue-600 text-white">{{ num }}</span>
+                        {% else %}
+                        <a 
+                            href="?page={{ num }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.area %}&area={{ request.GET.area }}{% endif %}{% if request.GET.tipo %}&tipo={{ request.GET.tipo }}{% endif %}" 
+                            class="px-3 py-1 rounded border border-gray-300 text-gray-700 hover:bg-gray-50"
+                        >
+                            {{ num }}
+                        </a>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if especialidades.has_next %}
+                    <a 
+                        href="?page={{ especialidades.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.area %}&area={{ request.GET.area }}{% endif %}{% if request.GET.tipo %}&tipo={{ request.GET.tipo }}{% endif %}" 
+                        class="px-3 py-1 rounded border border-gray-300 text-gray-700 hover:bg-gray-50"
+                    >
+                        &raquo;
+                    </a>
+                    {% endif %}
+                </nav>
+            </div>
+            {% endif %}
+        </main>
+    </div>
+</body>
+</html>

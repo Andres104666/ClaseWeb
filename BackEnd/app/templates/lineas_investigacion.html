@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Líneas de Investigación - CIATEQ</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* ESTILOS ORIGINALES DE TU BARRA LATERAL */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        .container {
+            display: flex;
+            min-height: 100vh;
+            background: #f8fafc;
+        }
+        .sidebar {
+            width: 280px;
+            background: #1e6feb;
+            color: white;
+            padding: 30px 0;
+            flex-shrink: 0;
+        }
+        .sidebar nav ul {
+            list-style: none;
+        }
+        .sidebar nav ul li {
+            padding: 12px 25px;
+            transition: all 0.3s;
+        }
+        .sidebar nav ul li:hover {
+            background: #1a63d1;
+        }
+        .menu_nav a {
+            color: #e2e8f0;
+            text-decoration: none;
+            display: block;
+            font-size: 0.95rem;
+            transition: color 0.3s;
+        }
+        .menu_nav a:hover {
+            color: #ffffff;
+        }
+
+        /* ESTILOS PARA LAS TARJETAS DE LÍNEAS DE INVESTIGACIÓN */
+        .linea-card {
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        .linea-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .linea-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #1e6feb 0%, #1a56c7 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .badge-area {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-weight: 500;
+            background-color: #e0f2fe;
+            color: #0369a1;
+        }
+        
+        .investigador-tag {
+            display: inline-flex;
+            align-items: center;
+            background-color: #f3f4f6;
+            color: #4b5563;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .investigador-avatar {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background-color: #1e6feb;
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.6rem;
+            margin-right: 0.25rem;
+        }
+        
+        .proyecto-badge {
+            background-color: #ecfdf5;
+            color: #059669;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <!-- CONTENEDOR PRINCIPAL CON TU ESTRUCTURA ORIGINAL -->
+    <div class="container">
+        <!-- BARRA LATERAL ORIGINAL -->
+        <aside class="sidebar">
+            <nav>
+                <ul class="menu_nav">
+                    <li><a href="{% url 'home' %}">Inicio</a></li>
+                    <li><a href="{% url 'investigadores' %}">Investigadores</a></li>
+                    <li><a href="{% url 'proyectos' %}">Proyectos</a></li>
+                    <li><a href="{% url 'areas' %}">Áreas</a></li>
+                    <li><a href="{% url 'especialidades' %}">Especialidades</a></li>
+                    <li><a href="{% url 'lineas_investigacion' %}">Líneas Investigación</a></li>
+                    <li><a href="{% url 'eventos' %}">Eventos</a></li>
+                    <li><a href="{% url 'articulos' %}">Artículos</a></li>
+                    <li><a href="{% url 'unidades' %}">Unidades</a></li>
+                    <li><a href="{% url 'estudiantes' %}">Estudiantes</a></li>
+                </ul>
+            </nav>
+        </aside>
+        
+        <!-- CONTENIDO PRINCIPAL -->
+        <main class="main-content" style="flex-grow: 1; padding: 40px; background: #f8fafc;">
+            <h1 class="text-2xl font-bold text-gray-800 mb-6 pb-4 border-b border-gray-200">Líneas de Investigación</h1>
+            
+            <!-- BARRA DE BÚSQUEDA Y FILTROS -->
+            <div class="mb-8 bg-white p-6 rounded-lg shadow-sm">
+                <form method="GET" action="{% url 'lineas_investigacion' %}" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <!-- Búsqueda por nombre -->
+                        <div>
+                            <label for="q" class="block text-sm font-medium text-gray-700 mb-1">Buscar línea</label>
+                            <input 
+                                type="text" 
+                                name="q" 
+                                id="q"
+                                placeholder="Nombre de la línea..." 
+                                value="{{ request.GET.q }}"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            >
+                        </div>
+                        
+                        <!-- Filtro por área -->
+                        <div>
+                            <label for="area" class="block text-sm font-medium text-gray-700 mb-1">Área</label>
+                            <select 
+                                name="area" 
+                                id="area"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            >
+                                <option value="">Todas las áreas</option>
+                                {% for area in areas %}
+                                <option value="{{ area.id }}" {% if area.id|stringformat:"s" == request.GET.area %}selected{% endif %}>
+                                    {{ area.nombre }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <!-- Filtro por estado -->
+                        <div>
+                            <label for="estado" class="block text-sm font-medium text-gray-700 mb-1">Estado</label>
+                            <select 
+                                name="estado" 
+                                id="estado"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            >
+                                <option value="">Todos los estados</option>
+                                <option value="ACT" {% if request.GET.estado == "ACT" %}selected{% endif %}>Activa</option>
+                                <option value="INA" {% if request.GET.estado == "INA" %}selected{% endif %}>Inactiva</option>
+                                <option value="DES" {% if request.GET.estado == "DES" %}selected{% endif %}>En desarrollo</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-end">
+                        <button 
+                            type="submit" 
+                            class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center"
+                        >
+                            <i class="fas fa-search mr-2"></i> Buscar
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- LISTA DE LÍNEAS DE INVESTIGACIÓN -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {% for linea in lineas %}
+                <!-- Tarjeta de línea de investigación -->
+                <div class="linea-card bg-white p-6 rounded-lg">
+                    <div class="flex flex-col items-center text-center mb-4">
+                        <div class="linea-icon">
+                            <i class="fas fa-{{ linea.icono|default:'flask' }}"></i>
+                        </div>
+                        <h2 class="text-xl font-semibold text-gray-800">{{ linea.nombre }}</h2>
+                        <span class="badge-area mt-2">{{ linea.area.nombre }}</span>
+                    </div>
+                    
+                    <!-- Descripción -->
+                    <p class="text-gray-600 mb-4 text-sm">{{ linea.descripcion|truncatechars:150 }}</p>
+                    
+                    <!-- Metadatos -->
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <h3 class="text-sm font-medium text-gray-700 mb-1">Estado:</h3>
+                            <p class="text-gray-600 text-sm">
+                                {% if linea.estado == 'ACT' %}
+                                <span class="text-green-600">●</span> Activa
+                                {% elif linea.estado == 'INA' %}
+                                <span class="text-red-600">●</span> Inactiva
+                                {% else %}
+                                <span class="text-yellow-600">●</span> En desarrollo
+                                {% endif %}
+                            </p>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-sm font-medium text-gray-700 mb-1">Proyectos:</h3>
+                            <p class="text-gray-600 text-sm">
+                                <span class="proyecto-badge">{{ linea.proyectos_count }} proyectos</span>
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- Investigadores asociados -->
+                    <div class="mb-4">
+                        <h3 class="text-sm font-medium text-gray-700 mb-2">Investigadores:</h3>
+                        <div class="flex flex-wrap">
+                            {% for investigador in linea.investigadores.all %}
+                            <span class="investigador-tag">
+                                <span class="investigador-avatar">{{ investigador.iniciales }}</span>
+                                {{ investigador.nombre_abreviado }}
+                            </span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <!-- Acciones -->
+                    <div class="flex justify-between items-center mt-4 pt-4 border-t border-gray-100">
+                        <a 
+                            href="#" 
+                            class="text-sm text-blue-600 hover:text-blue-800 hover:underline flex items-center"
+                        >
+                            <i class="fas fa-book-open mr-1"></i> Ver detalles
+                        </a>
+                        
+                        <div class="flex space-x-2">
+                            <a 
+                                href="#" 
+                                class="text-sm text-gray-600 hover:text-gray-800 hover:underline flex items-center"
+                            >
+                                <i class="fas fa-project-diagram mr-1"></i> Proyectos
+                            </a>
+                            <span class="text-gray-400">|</span>
+                            <a 
+                                href="#" 
+                                class="text-sm text-gray-600 hover:text-gray-800 hover:underline flex items-center"
+                            >
+                                <i class="fas fa-file-alt mr-1"></i> Publicaciones
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="bg-white p-8 rounded-lg text-center md:col-span-2 lg:col-span-3">
+                    <i class="fas fa-flask text-4xl text-gray-300 mb-4"></i>
+                    <h3 class="text-lg font-medium text-gray-700 mb-2">No se encontraron líneas de investigación</h3>
+                    <p class="text-gray-500">Intenta ajustar tus criterios de búsqueda</p>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <!-- PAGINACIÓN (si es necesario) -->
+            {% if lineas.has_other_pages %}
+            <div class="mt-8 flex justify-center">
+                <nav class="flex items-center space-x-2">
+                    {% if lineas.has_previous %}
+                    <a 
+                        href="?page={{ lineas.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.area %}&area={{ request.GET.area }}{% endif %}{% if request.GET.estado %}&estado={{ request.GET.estado }}{% endif %}" 
+                        class="px-3 py-1 rounded border border-gray-300 text-gray-700 hover:bg-gray-50"
+                    >
+                        &laquo;
+                    </a>
+                    {% endif %}
+                    
+                    {% for num in lineas.paginator.page_range %}
+                        {% if lineas.number == num %}
+                        <span class="px-3 py-1 rounded bg-blue-600 text-white">{{ num }}</span>
+                        {% else %}
+                        <a 
+                            href="?page={{ num }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.area %}&area={{ request.GET.area }}{% endif %}{% if request.GET.estado %}&estado={{ request.GET.estado }}{% endif %}" 
+                            class="px-3 py-1 rounded border border-gray-300 text-gray-700 hover:bg-gray-50"
+                        >
+                            {{ num }}
+                        </a>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if lineas.has_next %}
+                    <a 
+                        href="?page={{ lineas.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.area %}&area={{ request.GET.area }}{% endif %}{% if request.GET.estado %}&estado={{ request.GET.estado }}{% endif %}" 
+                        class="px-3 py-1 rounded border border-gray-300 text-gray-700 hover:bg-gray-50"
+                    >
+                        &raquo;
+                    </a>
+                    {% endif %}
+                </nav>
+            </div>
+            {% endif %}
+        </main>
+    </div>
+</body>
+</html>

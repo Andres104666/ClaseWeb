@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmación de Eliminación - CIATEQ</title>
+    <style>
+        /* Reset y estilos base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #F8F9FA;
+            color: #495057;
+            line-height: 1.6;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        /* Contenedor principal */
+        .confirmation-container {
+            background: #FFFFFF;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        /* Títulos y texto */
+        h1 {
+            color: #2C3E50;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        p {
+            color: #6C757D;
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            padding: 15px;
+            background-color: #F8F9FA;
+            border-radius: 6px;
+            border-left: 4px solid #2C3E50;
+        }
+        
+        /* Formulario y botones */
+        form {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        
+        button, a.btn-cancel {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        button[type="submit"] {
+            background-color: #E74C3C;
+            color: white;
+            font-weight: 500;
+        }
+        
+        button[type="submit"]:hover {
+            background-color: #C0392B;
+            transform: translateY(-2px);
+        }
+        
+        a.btn-cancel {
+            background-color: #2C3E50;
+            color: white;
+        }
+        
+        a.btn-cancel:hover {
+            background-color: #34495E;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="confirmation-container">
+        <h1>Confirmar eliminación</h1>
+        <p>¿Estás seguro de que deseas eliminar este {{ entidad }}?<br><strong>{{ registro }}</strong></p>
+        
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit">Eliminar</button>
+            <a href="{% url 'gestion_general' %}" class="btn-cancel">Cancelar</a>
+        </form>
+    </div>
+</body>
+</html>

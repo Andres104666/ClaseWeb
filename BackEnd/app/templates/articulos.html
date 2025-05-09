@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artículos Científicos - CIATEQ</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* ESTILOS ORIGINALES DE TU BARRA LATERAL */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        .container {
+            display: flex;
+            min-height: 100vh;
+            background: #f8fafc;
+        }
+        .sidebar {
+            width: 280px;
+            background: #1e6feb;
+            color: white;
+            padding: 30px 0;
+            flex-shrink: 0;
+        }
+        .sidebar nav ul {
+            list-style: none;
+        }
+        .sidebar nav ul li {
+            padding: 12px 25px;
+            transition: all 0.3s;
+        }
+        .sidebar nav ul li:hover {
+            background: #1a63d1;
+        }
+        .menu_nav a {
+            color: #e2e8f0;
+            text-decoration: none;
+            display: block;
+            font-size: 0.95rem;
+            transition: color 0.3s;
+        }
+        .menu_nav a:hover {
+            color: #ffffff;
+        }
+
+        /* ESTILOS PARA LAS TARJETAS DE ARTÍCULOS */
+        .articulo-card {
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        .articulo-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        .badge-tipo {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+        }
+        .tipo-journal { background-color: #dbeafe; color: #1e40af; }
+        .tipo-conferencia { background-color: #e9d5ff; color: #6b21a8; }
+        .tipo-libro { background-color: #fee2e2; color: #991b1b; }
+        .tipo-otro { background-color: #ecfccb; color: #365314; }
+        
+        .doi-link {
+            color: #3182ce;
+            word-break: break-all;
+        }
+        .doi-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <!-- CONTENEDOR PRINCIPAL CON TU ESTRUCTURA ORIGINAL -->
+    <div class="container">
+        <!-- BARRA LATERAL ORIGINAL (la que ya tenías funcionando) -->
+        <aside class="sidebar">
+            <nav>
+                <ul class="menu_nav">
+                    <li><a href="{% url 'home' %}">Inicio</a></li>
+                    <li><a href="{% url 'investigadores' %}">Investigadores</a></li>
+                    <li><a href="{% url 'proyectos' %}">Proyectos</a></li>
+                    <li><a href="{% url 'areas' %}">Áreas</a></li>
+                    <li><a href="{% url 'especialidades' %}">Especialidades</a></li>
+                    <li><a href="{% url 'lineas_investigacion' %}">Líneas Investigación</a></li>
+                    <li><a href="{% url 'eventos' %}">Eventos</a></li>
+                    <li><a href="{% url 'articulos' %}">Artículos</a></li>
+                    <li><a href="{% url 'unidades' %}">Unidades</a></li>
+                    <li><a href="{% url 'estudiantes' %}">Estudiantes</a></li>
+                </ul>
+            </nav>
+        </aside>
+        
+        <!-- CONTENIDO PRINCIPAL -->
+        <main class="main-content" style="flex-grow: 1; padding: 40px; background: #f8fafc;">
+            <h1 class="text-2xl font-bold text-gray-800 mb-6 pb-4 border-b border-gray-200">Artículos Científicos</h1>
+            
+            <!-- BARRA DE BÚSQUEDA Y FILTROS -->
+            <div class="mb-8 bg-white p-6 rounded-lg shadow-sm">
+                <form method="GET" action="{% url 'articulos' %}" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <!-- Búsqueda por título -->
+                        <div>
+                            <label for="q" class="block text-sm font-medium text-gray-700 mb-1">Buscar por título</label>
+                            <input 
+                                type="text" 
+                                name="q" 
+                                id="q"
+                                placeholder="Título del artículo..." 
+                                value="{{ request.GET.q }}"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            >
+                        </div>
+                        
+                        <!-- Filtro por área -->
+                        <div>
+                            <label for="area" class="block text-sm font-medium text-gray-700 mb-1">Filtrar por área</label>
+                            <select 
+                                name="area" 
+                                id="area"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            >
+                                <option value="">Todas las áreas</option>
+                                {% for area in areas %}
+                                <option value="{{ area.id }}" {% if area.id|stringformat:"s" == request.GET.area %}selected{% endif %}>
+                                    {{ area.nombre }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <!-- Filtro por año -->
+                        <div>
+                            <label for="year" class="block text-sm font-medium text-gray-700 mb-1">Filtrar por año</label>
+                            <select 
+                                name="year" 
+                                id="year"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            >
+                                <option value="">Todos los años</option>
+                                {% for year in years %}
+                                <option value="{{ year }}" {% if year|stringformat:"s" == request.GET.year %}selected{% endif %}>
+                                    {{ year }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-end">
+                        <button 
+                            type="submit" 
+                            class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center"
+                        >
+                            <i class="fas fa-search mr-2"></i> Buscar
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- LISTA DE ARTÍCULOS -->
+            <div class="grid grid-cols-1 gap-6">
+                {% for articulo in articulos %}
+                <!-- Tarjeta de artículo -->
+                <div class="articulo-card bg-white p-6 rounded-lg">
+                    <!-- Encabezado con título y tipo -->
+                    <div class="flex justify-between items-start mb-4">
+                        <h2 class="text-xl font-semibold text-gray-800">{{ articulo.titulo }}</h2>
+                        <span class="badge-tipo tipo-{{ articulo.tipo|lower }}">
+                            {{ articulo.get_tipo_display }}
+                        </span>
+                    </div>
+                    
+                    <!-- Autores y afiliaciones -->
+                    <div class="mb-4">
+                        <h3 class="text-sm font-medium text-gray-700 mb-1">Autores:</h3>
+                        <p class="text-gray-600 text-sm">
+                            {% for autor in articulo.autores.all %}
+                                {{ autor.nombre }}{% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        </p>
+                    </div>
+                    
+                    <!-- Información de publicación -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <h3 class="text-sm font-medium text-gray-700 mb-1">Publicado en:</h3>
+                            <p class="text-gray-600 text-sm">
+                                {% if articulo.revista %}
+                                    {{ articulo.revista }}
+                                    {% if articulo.volumen %}, Vol. {{ articulo.volumen }}{% endif %}
+                                    {% if articulo.numero %}({{ articulo.numero }}){% endif %}
+                                {% elif articulo.evento %}
+                                    {{ articulo.evento.nombre }}
+                                {% endif %}
+                            </p>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-sm font-medium text-gray-700 mb-1">Fecha de publicación:</h3>
+                            <p class="text-gray-600 text-sm">{{ articulo.fecha_publicacion|date:"F Y" }}</p>
+                        </div>
+                    </div>
+                    
+                    <!-- DOI y enlaces -->
+                    <div class="mb-4">
+                        {% if articulo.doi %}
+                        <h3 class="text-sm font-medium text-gray-700 mb-1">DOI:</h3>
+                        <a href="https://doi.org/{{ articulo.doi }}" target="_blank" class="doi-link text-sm">
+                            https://doi.org/{{ articulo.doi }}
+                        </a>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Palabras clave -->
+                    {% if articulo.palabras_clave %}
+                    <div class="mb-4">
+                        <h3 class="text-sm font-medium text-gray-700 mb-1">Palabras clave:</h3>
+                        <div class="flex flex-wrap gap-2">
+                            {% for palabra in articulo.palabras_clave_list %}
+                            <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">{{ palabra }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Área de investigación -->
+                    <div class="mb-4">
+                        <h3 class="text-sm font-medium text-gray-700 mb-1">Área de investigación:</h3>
+                        <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">
+                            {{ articulo.area.nombre }}
+                        </span>
+                    </div>
+                    
+                    <!-- Acciones -->
+                    <div class="flex justify-between items-center mt-4 pt-4 border-t border-gray-100">
+                        <a 
+                            href="#" 
+                            class="text-sm text-blue-600 hover:text-blue-800 hover:underline flex items-center"
+                        >
+                            <i class="fas fa-file-pdf mr-1"></i> Ver PDF
+                        </a>
+                        
+                        <div class="flex space-x-2">
+                            <a 
+                                href="#" 
+                                class="text-sm text-gray-600 hover:text-gray-800 hover:underline flex items-center"
+                            >
+                                <i class="fas fa-quote-right mr-1"></i> Citar
+                            </a>
+                            <span class="text-gray-400">|</span>
+                            <a 
+                                href="#" 
+                                class="text-sm text-gray-600 hover:text-gray-800 hover:underline flex items-center"
+                            >
+                                <i class="fas fa-share-alt mr-1"></i> Compartir
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="bg-white p-8 rounded-lg text-center">
+                    <i class="fas fa-file-alt text-4xl text-gray-300 mb-4"></i>
+                    <h3 class="text-lg font-medium text-gray-700 mb-2">No se encontraron artículos</h3>
+                    <p class="text-gray-500">Intenta ajustar tus criterios de búsqueda</p>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <!-- PAGINACIÓN (si es necesario) -->
+            {% if articulos.has_other_pages %}
+            <div class="mt-8 flex justify-center">
+                <nav class="flex items-center space-x-2">
+                    {% if articulos.has_previous %}
+                    <a 
+                        href="?page={{ articulos.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.area %}&area={{ request.GET.area }}{% endif %}{% if request.GET.year %}&year={{ request.GET.year }}{% endif %}" 
+                        class="px-3 py-1 rounded border border-gray-300 text-gray-700 hover:bg-gray-50"
+                    >
+                        &laquo;
+                    </a>
+                    {% endif %}
+                    
+                    {% for num in articulos.paginator.page_range %}
+                        {% if articulos.number == num %}
+                        <span class="px-3 py-1 rounded bg-blue-600 text-white">{{ num }}</span>
+                        {% else %}
+                        <a 
+                            href="?page={{ num }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.area %}&area={{ request.GET.area }}{% endif %}{% if request.GET.year %}&year={{ request.GET.year }}{% endif %}" 
+                            class="px-3 py-1 rounded border border-gray-300 text-gray-700 hover:bg-gray-50"
+                        >
+                            {{ num }}
+                        </a>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if articulos.has_next %}
+                    <a 
+                        href="?page={{ articulos.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.area %}&area={{ request.GET.area }}{% endif %}{% if request.GET.year %}&year={{ request.GET.year }}{% endif %}" 
+                        class="px-3 py-1 rounded border border-gray-300 text-gray-700 hover:bg-gray-50"
+                    >
+                        &raquo;
+                    </a>
+                    {% endif %}
+                </nav>
+            </div>
+            {% endif %}
+        </main>
+    </div>
+</body>
+</html>

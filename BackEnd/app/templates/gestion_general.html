@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión General - CIATEQ</title>
+    <style>
+        /* Reset y estilos base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        body {
+            background-color: #F8F9FA;
+            color: #2C3E50;
+            line-height: 1.6;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background-color: #1e6feb; /* Azul claro fuerte */
+            color: #ECF0F1;
+            padding: 30px 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar nav ul {
+            list-style: none;
+        }
+
+        .sidebar nav ul li {
+            margin-bottom: 5px;
+        }
+
+        .sidebar nav ul li a {
+            color: #ECF0F1;
+            text-decoration: none;
+            padding: 12px 25px;
+            display: block;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+        }
+
+        .sidebar nav ul li a:hover {
+            background-color: #1a63d1; /* Azul un poco más oscuro al hacer hover */
+            color: #ffffff;
+        }
+
+        /* Main content area */
+        .main-content {
+            margin-left: 280px;
+            padding: 40px;
+            min-height: 100vh;
+        }
+
+        /* Content sections */
+        .content-section {
+            background-color: white;
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .content-section h1 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #2C3E50;
+            font-weight: 600;
+            border-bottom: 2px solid #E9ECEF;
+            padding-bottom: 10px;
+        }
+
+        .content-section h2 {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: #1e6feb; /* Azul claro fuerte */
+            font-weight: 500;
+        }
+
+        /* Filter section */
+        .filter-section {
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .entity-selector {
+            padding: 10px 15px;
+            border: 1px solid #DEE2E6;
+            border-radius: 6px;
+            font-size: 1rem;
+            min-width: 300px;
+            transition: border-color 0.3s;
+        }
+
+        .entity-selector:focus {
+            outline: none;
+            border-color: #1e6feb; /* Azul claro fuerte */
+        }
+
+        /* Form styles */
+        .form-container {
+            margin-bottom: 40px;
+        }
+
+        .form-container form {
+            display: grid;
+            gap: 20px;
+        }
+
+        .form-container label {
+            font-weight: 500;
+            color: #2C3E50;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .form-container input,
+        .form-container select,
+        .form-container textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #DEE2E6;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-container input:focus,
+        .form-container select:focus,
+        .form-container textarea:focus {
+            outline: none;
+            border-color: #1e6feb; /* Azul claro fuerte */
+        }
+
+        .form-container button {
+            background-color: #1e6feb; /* Azul claro fuerte */
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            justify-self: start;
+        }
+
+        .form-container button:hover {
+            background-color: #1a63d1; /* Azul un poco más oscuro al hacer hover */
+            transform: translateY(-2px);
+        }
+
+        /* Records list */
+        .records-list {
+            margin-top: 30px;
+        }
+
+        .record-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background-color: #F8F9FA;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+        }
+
+        .record-item:hover {
+            background-color: #E9ECEF;
+            transform: translateX(5px);
+        }
+
+        .record-name {
+            font-weight: 500;
+            color: #2C3E50;
+        }
+
+        .record-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .btn-edit {
+            background-color: #1e6feb; /* Azul claro fuerte */
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background-color: #1a63d1; /* Azul un poco más oscuro al hacer hover */
+            transform: translateY(-2px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-delete {
+            background-color: #E74C3C;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-delete:hover {
+            background-color: #C0392B;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                position: static;
+                height: auto;
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+            
+            .record-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .record-actions {
+                align-self: flex-end;
+            }
+        }
+    </style>
+</head>
+<body>
+    <aside class="sidebar">
+        <nav>
+            <ul class="menu_nav">
+                <li><a href="{% url 'home' %}">Inicio</a></li>
+                <li><a href="{% url 'investigadores' %}">Investigadores</a></li>
+                <li><a href="{% url 'proyectos' %}">Proyectos</a></li>
+                <li><a href="{% url 'areas' %}">Áreas</a></li>
+                <li><a href="{% url 'especialidades' %}">Especialidades</a></li>
+                <li><a href="{% url 'lineas_investigacion' %}">Líneas Investigación</a></li>
+                <li><a href="{% url 'eventos' %}">Eventos</a></li>
+                <li><a href="{% url 'articulos' %}">Artículos</a></li>
+                <li><a href="{% url 'unidades' %}">Unidades</a></li>
+                <li><a href="{% url 'estudiantes' %}">Estudiantes</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <div class="content-section">
+            <h1>Panel de Gestión</h1>
+            
+            <!-- Entity selector -->
+            <div class="filter-section">
+                <form method="get" action="">
+                    <select name="entidad" id="entidad" class="entity-selector" onchange="this.form.submit()">
+                        {% for entidad in entidades %}
+                        <option value="{{ entidad }}" {% if entidad == entidad_seleccionada %}selected{% endif %}>
+                            {{ entidad|capfirst }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </form>
+            </div>
+
+            <!-- Form section -->
+            <div class="form-container content-section">
+                <h2>Agregar nuevo {{ entidad_seleccionada|capfirst }}</h2>
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit">Guardar</button>
+                </form>
+            </div>
+
+            <!-- Records list -->
+            <div class="records-list">
+                <h2>Listado de {{ entidad_seleccionada|capfirst }}</h2>
+                {% for registro in registros %}
+                <div class="record-item">
+                    <span class="record-name">{{ registro.nombre }}</span>
+                    <div class="record-actions">
+                        <a href="{% url 'editar_registro' entidad_seleccionada registro.pk %}" class="btn btn-edit">Editar</a>
+                        <form method="post" action="{% url 'eliminar_registro' entidad_seleccionada registro.pk %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-delete">Eliminar</button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </main>
+</body>
+</html>

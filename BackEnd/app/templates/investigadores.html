@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investigadores - CIATEQ</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        /* ESTILOS ORIGINALES DE TU BARRA LATERAL */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        .container {
+            display: flex;
+            min-height: 100vh;
+            background: #f8fafc;
+        }
+        .sidebar {
+            width: 280px;
+            background: #1e6feb;
+            color: white;
+            padding: 30px 0;
+            flex-shrink: 0;
+        }
+        .sidebar nav ul {
+            list-style: none;
+        }
+        .sidebar nav ul li {
+            padding: 12px 25px;
+            transition: all 0.3s;
+        }
+        .sidebar nav ul li:hover {
+            background: #1a63d1;
+        }
+        .menu_nav a {
+            color: #e2e8f0;
+            text-decoration: none;
+            display: block;
+            font-size: 0.95rem;
+            transition: color 0.3s;
+        }
+        .menu_nav a:hover {
+            color: #ffffff;
+        }
+
+        /* ESTILOS PARA LAS TARJETAS DE DEMOSTRACIÓN */
+        .investigador-card {
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        .investigador-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        .avatar-iniciales {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #1e6feb 0%, #1a56c7 100%);
+            color: white;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+        .badge-sni {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+        }
+        .sni-1 { background-color: #dbeafe; color: #1e40af; }
+        .sni-2 { background-color: #e9d5ff; color: #6b21a8; }
+        .sni-3 { background-color: #fee2e2; color: #991b1b; }
+    </style>
+</head>
+<body>
+    <!-- CONTENEDOR PRINCIPAL CON TU ESTRUCTURA ORIGINAL -->
+    <div class="container">
+        <!-- BARRA LATERAL ORIGINAL (la que ya tenías funcionando) -->
+        <aside class="sidebar">
+            <nav>
+                <ul class="menu_nav">
+                    <li><a href="{% url 'home' %}">Inicio</a></li>
+                    <li><a href="{% url 'investigadores' %}">Investigadores</a></li>
+                    <li><a href="{% url 'proyectos' %}">Proyectos</a></li>
+                    <li><a href="{% url 'areas' %}">Áreas</a></li>
+                    <li><a href="{% url 'especialidades' %}">Especialidades</a></li>
+                    <li><a href="{% url 'lineas_investigacion' %}">Líneas Investigación</a></li>
+                    <li><a href="{% url 'eventos' %}">Eventos</a></li>
+                    <li><a href="{% url 'articulos' %}">Artículos</a></li>
+                    <li><a href="{% url 'unidades' %}">Unidades</a></li>
+                    <li><a href="{% url 'estudiantes' %}">Estudiantes</a></li>
+                </ul>
+            </nav>
+        </aside>
+        
+        <!-- CONTENIDO PRINCIPAL -->
+        <main class="main-content" style="flex-grow: 1; padding: 40px; background: #f8fafc;">
+            <h1 class="text-2xl font-bold text-gray-800 mb-6 pb-4 border-b border-gray-200">Nuestros Investigadores</h1>
+            
+            <!-- BARRA DE BÚSQUEDA (conserva tu lógica original) -->
+            <form method="GET" action="{% url 'investigadores' %}" class="mb-8">
+                <div class="flex gap-4">
+                    <input 
+                        type="text" 
+                        name="q" 
+                        placeholder="Buscar investigadores..." 
+                        value="{{ request.GET.q }}"
+                        class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    >
+                    <button 
+                        type="submit" 
+                        class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                    >
+                        Buscar
+                    </button>
+                </div>
+            </form>
+
+            <!-- SECCIÓN DEMOSTRATIVA CON TARJETAS DE EJEMPLO -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Tarjeta de ejemplo 1 -->
+                <div class="investigador-card bg-white p-6 rounded-lg">
+                    <div class="flex items-center mb-4">
+                        <div class="avatar-iniciales mr-4">JD</div>
+                        <div>
+                            <h3 class="text-xl font-semibold text-gray-800">Dra. Juana Díaz</h3>
+                            <p class="text-sm text-gray-600">Robótica Industrial</p>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-2 mb-4">
+                        <p class="text-gray-700 text-sm"><span class="font-medium">Email:</span> jdiaz@ciateq.mx</p>
+                        <p class="text-gray-700 text-sm"><span class="font-medium">Teléfono:</span> +52 442 123 4567</p>
+                        <p class="text-gray-700 text-sm">
+                            <span class="font-medium">SNI:</span> 
+                            <span class="badge-sni sni-2">Nivel II</span>
+                        </p>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h4 class="text-sm font-medium text-gray-700 mb-2">Líneas de investigación:</h4>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Robótica colaborativa</span>
+                            <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Inteligencia artificial</span>
+                        </div>
+                    </div>
+                    
+                    <a 
+                        href="#" 
+                        class="block mt-4 text-center px-4 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition"
+                    >
+                        Ver perfil completo
+                    </a>
+                </div>
+
+                <!-- Tarjeta de ejemplo 2 -->
+                <div class="investigador-card bg-white p-6 rounded-lg">
+                    <div class="flex items-center mb-4">
+                        <div class="avatar-iniciales mr-4">RM</div>
+                        <div>
+                            <h3 class="text-xl font-semibold text-gray-800">Dr. Roberto Martínez</h3>
+                            <p class="text-sm text-gray-600">Energías Renovables</p>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-2 mb-4">
+                        <p class="text-gray-700 text-sm"><span class="font-medium">Email:</span> rmartinez@ciateq.mx</p>
+                        <p class="text-gray-700 text-sm"><span class="font-medium">Teléfono:</span> +52 442 987 6543</p>
+                        <p class="text-gray-700 text-sm">
+                            <span class="font-medium">SNI:</span> 
+                            <span class="badge-sni sni-3">Nivel III</span>
+                        </p>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h4 class="text-sm font-medium text-gray-700 mb-2">Líneas de investigación:</h4>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Energía solar</span>
+                            <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Almacenamiento energético</span>
+                        </div>
+                    </div>
+                    
+                    <a 
+                        href="#" 
+                        class="block mt-4 text-center px-4 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition"
+                    >
+                        Ver perfil completo
+                    </a>
+                </div>
+
+                <!-- Tarjeta de ejemplo 3 -->
+                <div class="investigador-card bg-white p-6 rounded-lg">
+                    <div class="flex items-center mb-4">
+                        <div class="avatar-iniciales mr-4">LG</div>
+                        <div>
+                            <h3 class="text-xl font-semibold text-gray-800">Dra. Laura González</h3>
+                            <p class="text-sm text-gray-600">Biotecnología</p>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-2 mb-4">
+                        <p class="text-gray-700 text-sm"><span class="font-medium">Email:</span> lgonzalez@ciateq.mx</p>
+                        <p class="text-gray-700 text-sm"><span class="font-medium">Teléfono:</span> +52 442 555 1234</p>
+                        <p class="text-gray-700 text-sm">
+                            <span class="font-medium">SNI:</span> 
+                            <span class="badge-sni sni-1">Nivel I</span>
+                        </p>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h4 class="text-sm font-medium text-gray-700 mb-2">Líneas de investigación:</h4>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Bioprocesos</span>
+                            <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Nanotecnología</span>
+                        </div>
+                    </div>
+                    
+                    <a 
+                        href="#" 
+                        class="block mt-4 text-center px-4 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition"
+                    >
+                        Ver perfil completo
+                    </a>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
